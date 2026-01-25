@@ -1,0 +1,20 @@
+# Permalinks
+permalink:           /posts/:title/
+
+# Setup
+title:               Talking Rock Labs
+tagline:             'Offensive Security Research with Pragmatic Applications'
+description:         ''
+url:                 https://talkingrock.io
+baseurl:             ''
+paginate:            5
+
+# About/contact
+author:
+  name:              Talking Rock Labs
+  url:               https://github.com/talking-rock-labs
+
+# Custom vars
+version:             1.0.0
+
+plugins: [jekyll-paginate, jekyll-feed]

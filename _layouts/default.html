@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  {% include head.html %}
+
+  <body>
+    {% include sidebar.html %}
+
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <div class="masthead-logo">
+            <!-- Placeholder for Talking Rock Labs logo -->
+            <img src="{{ site.baseurl }}/public/images/talking-rock-labs-logo.png" alt="Talking Rock Labs" style="display: none;" id="logo-image">
+            <div id="logo-placeholder" style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 0.5rem; display: inline-block;">
+              <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">[Talking Rock Labs Logo Placeholder]</p>
+            </div>
+          </div>
+          <h3 class="masthead-title">
+            <a href="{{ site.baseurl }}/" title="Home">{{ site.title }}</a>
+            <small>{{ site.tagline }}</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        {{ content }}
+      </div>
+    </div>
+
+    <script>
+      // Show logo if image exists, otherwise show placeholder
+      var logoImg = document.getElementById('logo-image');
+      var logoPlaceholder = document.getElementById('logo-placeholder');
+
+      logoImg.onerror = function() {
+        logoImg.style.display = 'none';
+        logoPlaceholder.style.display = 'inline-block';
+      };
+
+      logoImg.onload = function() {
+        logoImg.style.display = 'block';
+        logoPlaceholder.style.display = 'none';
+      };
+    </script>
+  </body>
+</html>

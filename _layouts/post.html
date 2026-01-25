@@ -1,0 +1,46 @@
+---
+layout: default
+---
+
+<article class="post">
+  <!-- Post metadata section (above title) -->
+  <div style="margin-bottom: 1rem; color: #666666; font-size: 0.9rem;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+      <span>·</span>
+      {% if page.author %}
+      <span>{{ page.author }}</span>
+      {% else %}
+      <span>{{ site.author.name }}</span>
+      {% endif %}
+    </div>
+
+    {% if page.categories %}
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      {% for category in page.categories %}
+        <span style="background-color: #f5f5f5; color: #666666; padding: 0.2rem 0.6rem; border-radius: 0.25rem; font-size: 0.8rem;">{{ category }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <h1 class="post-title" style="margin-top: 0;">{{ page.title }}</h1>
+
+  {{ content }}
+</article>
+
+<div class="related" style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #dddddd;">
+  <h2>Related Posts</h2>
+  <ul class="related-posts" style="list-style: none; padding: 0;">
+    {% for post in site.related_posts limit:3 %}
+      <li style="margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.2rem;">
+          <a href="{{ site.baseurl }}{{ post.url }}">
+            {{ post.title }}
+          </a>
+        </h3>
+        <small style="color: #666666;">{{ post.date | date_to_string }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
