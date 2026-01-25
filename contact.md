@@ -10,11 +10,11 @@ We welcome collaboration, feedback, and inquiries from the security research com
 
 ### Contact Methods
 
-**Email**: [contact@talkingrrocklabs.com](mailto:contact@talkingrrocklabs.com) *(placeholder)*
+**Email**: [contact@talkingrock.io](mailto:contact@talkingrock.io)
 
-**GitHub**: [github.com/talking-rock-labs](https://github.com/talking-rock-labs) *(placeholder)*
+**GitHub**: [github.com/TalkingRockLabs](https://github.com/TalkingRockLabs)
 
-**Twitter**: [@TalkingRockLabs](https://twitter.com/TalkingRockLabs) *(placeholder)*
+**Twitter**: [@TalkingRockLabs](https://twitter.com/TalkingRockLabs)
 
 ### Collaboration Opportunities
 
@@ -28,11 +28,7 @@ We're always interested in collaborating with security researchers on:
 
 ### Responsible Disclosure
 
-If you've discovered a security vulnerability in any of our published tools or projects, please contact us privately at:
-
-**Security Email**: [security@talkingrrocklabs.com](mailto:security@talkingrrocklabs.com) *(placeholder)*
-
-We follow responsible disclosure practices and will work with you to address any security concerns.
+If you've discovered a security vulnerability in any of our published tools or projects, please contact us privately via email. We follow responsible disclosure practices and will work with you to address any security concerns.
 
 ### Response Time
 

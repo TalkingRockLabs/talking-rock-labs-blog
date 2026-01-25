@@ -3,7 +3,7 @@ layout: post
 title: "Introducing Crebain"
 categories: [security, rf, c2]
 published: true
-date: 2025-01-13
+date: 2026-01-13
 ---
 
 For me, 2025 began with a newfound interest in various LoRa-based mesh networking "systems". This led me down a pretty standard path of experimenting with Meshtastic, then into more esoteric, but similar technologies like Meshcore and Reticulum. After tinkering with the basics, and doing some pretty basic designs of cyber-security related applications using these systems, I took it a step further. Alongside my colleague Mike Seay, I began developing a command and control system designed around secure out-of-band implant communication using LoRa mesh networking systems. This was introduced during BSides Nashville and BSides Tampa 2025, but was mostly a proof-of-concept at the time (more details can be found here). Mike Seay and myself hinted at a full release in 2025 to some folks, but we fell a little short of that goal for a myriad of reasons. But, here we are, to show the handful of folks from BSides and in the industry what we've been working on, and to introduce Crebain.

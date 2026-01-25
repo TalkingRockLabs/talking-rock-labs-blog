@@ -12,7 +12,7 @@ paginate:            5
 # About/contact
 author:
   name:              Talking Rock Labs
-  url:               https://github.com/talking-rock-labs
+  url:               https://github.com/TalkingRockLabs
 
 # Custom vars
 version:             1.0.0
