@@ -3,7 +3,7 @@ permalink:           /posts/:title/
 
 # Setup
 title:               Talking Rock Labs
-tagline:             'Offensive Security Research with Pragmatic Applications'
+tagline:             ''
 description:         ''
 url:                 https://talkingrock.io
 baseurl:             ''

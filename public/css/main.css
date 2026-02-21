@@ -171,11 +171,15 @@ a:hover {
 
 /* Header/Masthead */
 .masthead {
-  background: #111111;
+  background: var(--background);
   color: white;
   padding: 2rem 0;
   margin-bottom: 3rem;
-  border-bottom: 3px solid #333333;
+}
+
+.masthead > .container {
+  border-bottom: 2px solid white;
+  padding-bottom: 2rem;
 }
 
 .masthead-title {
