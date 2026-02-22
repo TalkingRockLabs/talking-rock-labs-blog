@@ -391,7 +391,7 @@ The answer to detection of LDAP reconnaissance at enterprise scale seems to be M
 
 Outside of security appliances form big names like Microsoft, this type of activity can be detected by analyzing LDAP traffic to domain controllers using various tools. Here's some sample traffic in Wireshark.
 
-![Sample LDAP Traffic](/assets/images/simple_ad_attack_1.PNG)
+![Sample LDAP Traffic](/public/images/simple_ad_attack_1.PNG)
 
 And here's an example Snort rule with logic for detection of SPN discovery (note that, in practice, the source and dest CIDRs/IPs should be set in such a rule). To detect other filters, just alter the "content" section of the Snort rule (come to think of it, I should write more of these and further test them). This is a super basic rule (I'm a Suricata novice), but check out [one of my Github repositories](https://github.com/m1kemu/DetectionRules/blob/main/IDS/suricata_active_directory.rules) for more.
 

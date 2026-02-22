@@ -11,13 +11,13 @@ I've started to dabble in Go a lot over the last few months, and I'm starting to
 Before getting into the specifics of the Launcher techniques, here's a VirusTotal score for a couple of Launcher variants:
 
 1. Launcher with plaintext shellcode embedded.  
-![VirusTotal Results](/assets/images/go_shellcode_5.PNG)  
+![VirusTotal Results](/public/images/go_shellcode_5.PNG)  
 2. Launcher with XOR encrypted shellcode embedded (same score as unencrypted).  
-![VirusTotal Results](/assets/images/go_shellcode_5.PNG)
+![VirusTotal Results](/public/images/go_shellcode_5.PNG)
 3. Launcher that pulls down XOR encrypted shellcode via HTTPS.  
-![VirusTotal Results](/assets/images/go_shellcode_6.PNG)  
+![VirusTotal Results](/public/images/go_shellcode_6.PNG)  
 4. Launcher that pulls down shellcode via HTTPS and is packed with UPX.  
-![VirusTotal Results](/assets/images/go_shellcode_7.PNG)  
+![VirusTotal Results](/public/images/go_shellcode_7.PNG)  
 
 As you can see, the Launcher works pretty well, and it's very simple. Nice.  
 
@@ -499,9 +499,9 @@ go build runner.go
 
 Give it a run and confirm the shellcode exection.
 
-![VirusTotal Results](/assets/images/go_shellcode_1.PNG)
+![VirusTotal Results](/public/images/go_shellcode_1.PNG)
 
-![VirusTotal Results](/assets/images/go_shellcode_2.PNG)
+![VirusTotal Results](/public/images/go_shellcode_2.PNG)
 
 ## Creating the Launcher
 
@@ -612,9 +612,9 @@ I added the 'final message' output of this to download_me.txt, and hosted it usi
 
 Now, test the Launcher. Note the console output. This is just for debugging purposes.
 
-![VirusTotal Results](/assets/images/go_shellcode_4.PNG)
+![VirusTotal Results](/public/images/go_shellcode_4.PNG)
 
-![VirusTotal Results](/assets/images/go_shellcode_3.PNG)
+![VirusTotal Results](/public/images/go_shellcode_3.PNG)
 
 Nice. It worked. At this point, the Launcher is complete. There are plenty of other changes that can be made, but I hope the general idea for building a quick shellcode Launcher in Go makes sense. These techniques aren't novel, but the formula is modular enough that anyone can substitute a 'technique' demonstrated for something more advanced.
 

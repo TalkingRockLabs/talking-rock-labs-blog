@@ -16,11 +16,11 @@ Antivirus (AV) and Endpoint Detection and Response (EDR) tools have gotten a lot
 
 In fact, despite being well known, the methods used in this article to generate a shellcode launcher score well on VirusTotal (VT).
 
-![VirusTotal Results](/assets/images/python_injection_5.PNG)
+![VirusTotal Results](/public/images/python_injection_5.PNG)
 
 Here is the VT score for a C# binary with nearly identical functionality (down to the same kernel32 functions and shellcode).
 
-![VirusTotal Results](/assets/images/python_injection_7.PNG)
+![VirusTotal Results](/public/images/python_injection_7.PNG)
 
 It's interesting that such an old technique can fool some of the biggest names in AV, and even fares better than a C# binary using techniques common in C# tradecraft.
 
@@ -105,7 +105,7 @@ WaitForSingleObject(thread, 0xFFFFFFFF)
 
 If you were using Python 2 to run this, you would get your calc.exe execution. Great. Python 2 is fine with us passing the shellcode to RtlMoveMemory as a string type. This is because in Python 2, strings are stored as bytes, not unicode objects. In Python 3, strings are stored as unicode by default. Running this same code in Python 3 will net you the following error:
 
-![Null Byte Error](/assets/images/python_injection_1.PNG)
+![Null Byte Error](/public/images/python_injection_1.PNG)
 
 The alteration of converting the above shellcode to bytes as shown below will make this Python 3 compatible.
 
@@ -288,9 +288,9 @@ import ctypes.wintypes
 
 Without defining argtypes for the various kernel functions that we're using, there will eventually be some odd type-related errors (see below).
 
-![Error](/assets/images/python_injection_2.PNG)
+![Error](/public/images/python_injection_2.PNG)
 
-![Error](/assets/images/python_injection_3.PNG)
+![Error](/public/images/python_injection_3.PNG)
 
 Errors produced by using the default functions without defining argtypes.
 
@@ -495,7 +495,7 @@ To test, I generated shellcode (shown earlier), ran the Composer.py script conta
 
 If you pop a calc.exe, it worked!
 
-![Calc](/assets/images/python_injection_4.PNG)
+![Calc](/public/images/python_injection_4.PNG)
 
 ## Compiling
 
