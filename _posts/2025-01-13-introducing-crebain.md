@@ -6,7 +6,7 @@ published: true
 date: 2026-02-20
 ---
 
-Crebain is a command and control system that uses the Reticulum Network Stack for transferring data between nodes. The tool is intended to be used by benign actors as a covert, physically deployed device that enables ingressing and egressing a target network via a cryptographically secure communications channel over LoRa (using RNodes and RNS). The idea is that, using Crebain, operators can totally avoid traditional C2 over web, TCP, UDP, or really any standard protocol. It uses a client-server architecture, Python, SQLite, Flask, and RNS to achieve a pretty standard set of C2 functionalities (we're mostly modeling our base use cases after CobaltStrike, Empire, and Metasploit, because we're stuck in 2017). The core C2 functionalities include:
+Crebain is an experimental command and control system that uses the Reticulum Network Stack for transferring data between nodes. The tool is intended to be used by benign actors as a covert, physically deployed device that enables ingressing and egressing a target network via a cryptographically secure communications channel over LoRa (using RNodes and RNS). The idea is that, using Crebain, operators can totally avoid traditional C2 over web, TCP, UDP, or really any standard protocol. It uses a client-server architecture, Python, SQLite, Flask, and RNS to achieve a standard set of C2 functionalities (modeled after CobaltStrike, Empire, and Metasploit). The core C2 functionalities include:
 
 - **Periodic client check-ins:** clients send back detailed health checks based on a configured interval/jitter value.
 - **Command execution:** operators can run commands on the Linux clients in an asynchronous manner.
@@ -33,7 +33,7 @@ Crebain can also function as a platform for performing standard network penetrat
 
 ### Augmenting Existing C2 Implants
 
-If you have a C2 implant within a target network already, you can use Crebain's native web proxy server to tunnel your communications outbound over LoRa. Operators can use this to make their communications even more covert, as there's no need to traverse target egress firewalls, DLP, or other pesky security controls. As long as your C2 implant has the ability to configure a web proxy (metasploit, CobaltStrike, Empire all do), you can tunnel your traffic through Crebain. Here's how this looks at a basic level:
+If you have a C2 implant within a target network already, you can use Crebain's native web proxy server to tunnel your communications outbound over LoRa. Operators can use this to make their communications even more covert, as there's no need to traverse target egress firewalls, DLP, or other pesky security controls. As long as your C2 implant has the ability to configure a web proxy (Metasploit, CobaltStrike, Empire all do), you can tunnel your traffic through Crebain. Here's how this looks at a basic level:
 
 ![Crebain Proxy Flow Diagram](/public/images/crebain_proxy_flow.png)
 
@@ -41,7 +41,7 @@ If you have a C2 implant within a target network already, you can use Crebain's 
 
 [LoRa (Long Range)](https://en.wikipedia.org/wiki/LoRa) is a radio communication technique that employs chirp spread-spectrum modulation, which is interference resistant and **energy efficient**. It's also **license-free** for use on the 902-928 MHz frequency band in the US. You'll typically find it used in IoT applications, but these characteristics make it appealing for use in red team implants and dropboxes. Reticulum (or the Reticulum Network Stack / RNS) is an open source network stack that features desirable security characteristics out of the box, like forward secrecy and **encrypted data transfers**. RNS allows developers to easily transfer data (including large files) securely using LoRa (via the related RNode firmware) in just a few lines of Python.
 
-The characteristics of both LoRa and RNS were desirable to us, as they allow for **secure, long range, low power data transmission without a license**. This fit our needs for a covert rogue device. The hardware is also **inexpensive and ubiquitous**. This makes a "bring your own infrastructure" covert channel possible for operators, and reduces the reliance on third party infrastructure, such as cellular networks or cloud service providers (which may be a problem from OPSEC and legal perspectives), for long range operations (more information on some previous range testing can be found [here]((https://github.com/m1kemu/crebain-framework/blob/main/lora_implant_bsides_2025.pdf))).
+The characteristics of both LoRa and RNS were desirable to us, as they allow for **secure, long range, low power data transmission without a license**. This fit our needs for a covert rogue device. The hardware is also **inexpensive and ubiquitous**. This makes a "bring your own infrastructure" covert channel possible for operators, and reduces the reliance on third party infrastructure, such as cellular networks or cloud service providers (which may be a problem from OPSEC and legal perspectives), for long range operations (more information on some previous range testing can be found [here](https://github.com/m1kemu/crebain-framework/blob/main/lora_implant_bsides_2025.pdf)).
 
 ![In some tests, we've gotten very long range data transmissions between two nodes with simple antennas.](/public/images/range_test_1.JPG)
 *In some tests, we've gotten very long range data transmissions with simple antennas.*
@@ -50,13 +50,13 @@ The characteristics of both LoRa and RNS were desirable to us, as they allow for
 
 Crebain was designed to be easily deployed, and the software itself certainly achieves that. However, there are a few hardware components and their respective firmware to be configured before the software deployment and initial operation. This example Crebain deployment and target interaction will consist of the following components:
 
->**Crebain Server**: 1x Intel NUC NUC8i5BEH, 1x Heltec v3, 1x 2dba antenna
+>**Crebain Server**: 1x Intel NUC NUC8i5BEH, 1x Heltec v3, 1x 2dbi antenna
 >
->**Crebain Client**: 1x Raspberry pi zero 2w, 1x Heltec v3, 1x Generic USB GPS transmitter, 1x pi zero 2w PoE hat, 1x 2dba antenna
+>**Crebain Client**: 1x Raspberry pi zero 2w, 1x Heltec v3, 1x Generic USB GPS transmitter, 1x pi zero 2w PoE hat, 1x 2dbi antenna
 >
 >**Operator Laptop**: 1x Thinkpad T480
 >
->**Target Network**: 1x Asus Nighthawk router
+>**Target Network**: 1x Asus router
 
 The idea is that, for this demonstration, the attacker (myself) will provision a typical Crebain client/server (raspberry Pi, Intel NUC with Heltec LoRa boards), physically implant the client device onto the target network (my home network) via an ethernet connection to a target networking device (my router), then perform reconnaissance and tunnel C2 traffic from an existing implant (on my laptop) via Crebain.
 
@@ -238,7 +238,7 @@ The Crebain client features a locally-hosted web proxy server (default port 8080
 - The proxy traffic is encrypted, just like any other RNS traffic.
 - The proxy feature runs on a completely separate RNS link than the other Crebain features, which operate asynchronously.
 
-Here's a walkthrough of how to use the proxy. In this example, I'll be proxying meterpreter C2 traffic from a compromised virtual machine on the same network as the Crebain client.
+Here's a walkthrough of how to use the proxy. In this example, I'll be proxying Empire C2 traffic from a compromised virtual machine on the same network as the Crebain client.
 
 1. On the Crebain server, I navigate to the Crebain node that I'll use to proxy the C2 traffic. I'll select the proxy tab, and enable the proxy if it's not enabled (if you used my example client.conf file, it's enabled by default). Note that this is the exact same Crebain server/client from my previous examples, so it's running on two separate devices on my home network.
 
