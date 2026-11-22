@@ -8,6 +8,7 @@ Talking Rock Labs is a security research initiative focused on offensive securit
 
 ## Contact
 
+- Email: contact@talkingrock.io
 - GitHub: [TalkingRockLabs](https://github.com/TalkingRockLabs)
 
 ## License

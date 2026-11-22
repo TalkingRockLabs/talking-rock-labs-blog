@@ -6,7 +6,7 @@ nav_order: 2
 
 ## Our Mission
 
-Talking Rock Labs is a collaborative security research project focused on vulnerability research, tool development, and advancing offensive security tradecraft in our technical focus areas: OT/IoT/SCADA exploitation, applications of RF for offsec, evasive offensive operations, physical security, and secure communications. Our objective is accurate, useful, transparent, and accessible research in these areas.
+Talking Rock Labs is a collaborative security research project focused on vulnerability research, tool development, and advancing offensive security tradecraft in our technical focus areas: OT, SCADA, BMS, and IoT security, including device testing; RF security; evasive offensive operations; physical security; and secure communications. We also work in threat intelligence, deception technology, and operate custom honeynets oriented toward critical industries. Our objective is accurate, useful, transparent, and accessible research in these areas.
 
 ## What We Do
 
@@ -22,15 +22,14 @@ We produce and disseminate research to the larger security community. This work 
 
 Our current research interests include:
 
-* Red Team Operations & Adversary Simulation
-* Penetration Testing Methodologies
-* Malware Development & Analysis
-* Active Directory Security
-* Evasion Techniques & Defensive Countermeasures
-* Cloud Security
-* Container & Kubernetes Security
-* Exploit Development
-* Post-Exploitation Techniques
+* OT, SCADA, BMS, and IoT security, including device testing
+* RF security and applications of RF for offensive operations
+* Threat intelligence oriented toward critical industries
+* Deception technology and custom honeynets for critical infrastructure
+* Evasive offensive operations and post-exploitation
+* Physical security and secure communications
+* Vulnerability research and exploit development
+* Security tooling and red team operations
 
 ## Ethics & Responsible Disclosure
 

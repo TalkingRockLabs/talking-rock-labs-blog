@@ -215,8 +215,9 @@ a:hover {
 }
 
 .masthead-logo img {
-  max-width: 200px;
-  height: auto;
+  height: 160px;
+  width: auto;
+  max-width: 100%;
   display: block;
   margin: 0 auto;
 }
@@ -414,6 +415,10 @@ th {
 
   .masthead-title a {
     font-size: 2rem;
+  }
+
+  .masthead-logo img {
+    height: 120px;
   }
 
   h1 { font-size: 2rem; }
